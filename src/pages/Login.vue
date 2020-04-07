@@ -29,12 +29,14 @@
       loginWithGoogle() {
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
           .then((response) => {
-            console.log(response.user)
+            // console.log(response.user)
+
+            //dispatch seetUser
+            this.$store.dispatch('setUser', response.user)
+            //redirect to home page
+            this.$router.push('/')
           })
       }
-    },
-    created() {
-      console.log(process.env.VUE_APP_API_KEY)
     }
   }
 </script>
