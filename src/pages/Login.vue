@@ -5,6 +5,15 @@
       <p>Realtime communication at it's beast</p>
     </div>
 
+<!--    loading status-->
+    <div class="alert alert-info" v-if="loading">Processing...</div>
+
+<!--    show errors -->
+    <div class="alert alert-danger" v-if="hasErrors">
+      <div v-for="error in errors">{{ error }}</div>
+    </div>
+
+
     <div class="container-fluid">
       <div class="row mt-5">
         <div class="col text-center">
@@ -25,8 +34,27 @@
   import auth from 'firebase/auth'
   export default {
     name: 'login',
+    data() {
+      return {
+        errors: [],
+        loading: false
+      }
+    },
+
+    computed: {
+      hasErrors() {
+        return this.errors.length > 0
+      }
+    },
     methods: {
+
+
       loginWithGoogle() {
+        //loading set to true
+        this.loading = true
+        //cleear old error
+        this.errors = []
+
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
           .then((response) => {
             // console.log(response.user)
@@ -35,6 +63,11 @@
             this.$store.dispatch('setUser', response.user)
             //redirect to home page
             this.$router.push('/')
+          })
+          .catch(error => {
+            this.errors.push(error.message)
+            //set loaging to false
+            this.loading = false
           })
       }
     }
